@@ -1,0 +1,49 @@
+---
+- name : Uninstall old versions
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - docker
+    - docker-common
+    - container-selinux
+    - docker-selinux
+    - docker-engine-selinux
+    - docker-engine
+    - docker-ce
+    - docker-ce-selinux
+  become: true
+
+- name: Install dependencies
+  yum:
+      name={{ item }}
+      update_cache=yes
+      state=present
+  with_items: "{{ __docker_pre_packages }}"
+
+- name: Install pip
+  easy_install:
+      name=pip
+
+- name: Install docker-py
+  pip:
+    name=docker-py
+    state=present
+
+- name: Add docker yum repo
+  shell: "yum-config-manager --add-repo {{ __docker_repo_url }}"
+  when: __docker_package == "docker-ce"
+
+- name: Add docker yum repo for older versions
+  yum_repository:
+    name: docker
+    description: Docker Repo
+    baseurl: "{{ __docker_repo_url }}"
+    gpgkey: "{{ __docker_repo_key }}"
+    gpgcheck: yes
+  when: __docker_package == "docker-engine"
+
+- name: Install Docker package
+  yum:
+    name="{{ __docker_package }}-{{ __docker_version }}"
+    update_cache=yes

@@ -1,0 +1,25 @@
+version: '2'
+services:
+  vertx-web:
+    image: core/verticle
+    stdin_open: true
+    tty: true
+    links:
+    - mariadb-test:mariadb-test
+  lb-api:
+    image: rancher/lb-service-haproxy:v0.6.4
+    ports:
+    - 7070:7070/tcp
+    labels:
+      io.rancher.container.agent.role: environmentAdmin
+      io.rancher.container.create_agent: 'true'
+  mariadb-test:
+    image: mariadb:10.1
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret
+    stdin_open: true
+    volumes:
+    - /home/rts/apps/docker/dump:/docker-entrypoint-initdb.d
+    tty: true
+    ports:
+    - 3306:3306/tcp

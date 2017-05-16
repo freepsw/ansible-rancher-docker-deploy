@@ -1,0 +1,12 @@
+---
+
+- name: Jobs for deploying data-api container
+  hosts: localhost
+  vars_files:
+    - inventories/group_vars/main.yml
+  tasks:
+  - debug:
+      msg: " {{ docker.image_dir }}"
+      #msg: "test {{ docker_home_dir }}"
+     ##var: docker_image_dir
+     ##var: hostvars[inventory_hostname]

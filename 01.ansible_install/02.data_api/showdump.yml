@@ -1,0 +1,6 @@
+---
+
+- name: Dump all vars
+  hosts: localhost
+  tasks:
+    - action: template src=dumpall.j2 dest=./ansible_dump.all

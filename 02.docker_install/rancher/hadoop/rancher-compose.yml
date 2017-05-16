@@ -1,0 +1,183 @@
+version: '2'
+services:
+  sl-namenode-config:
+    metadata:
+      hdfs-site: &id001
+        dfs.replication: '3'
+        dfs.webhdfs.enabled: 'true'
+      core-site: &id002
+        hadoop.proxyuser.hue.groups: '*'
+        hadoop.proxyuser.hue.hosts: '*'
+    scale: 1
+    start_on_create: true
+  yarn-nodemanager-data:
+    metadata:
+      hdfs-site: &id009
+        dfs-replication: '3'
+        dfs.webhdfs.enabled: 'true'
+      mapred-site: &id010
+        mapreduce.map.java.opts: -Xmx768m
+        mapreduce.map.memory.mb: '1024'
+        mapreduce.reduce.java.opts: -Xmx1536m
+        mapreduce.reduce.memory.mb: '2048'
+      core-site: &id011
+        hadoop.proxyuser.hue.groups: '*'
+        hadoop.proxyuser.hue.hosts: '*'
+      yarn-site: &id012
+        yarn.log-aggregation-enable: 'true'
+        yarn.log-aggregation.retain-check-interval-seconds: 3600
+        yarn.log-aggregation.retain-seconds: 10800
+        yarn.nodemanager.aux-services: mapreduce_shuffle
+        yarn.nodemanager.resource.cpu-vcores: '8'
+        yarn.nodemanager.resource.memory-mb: '8192'
+        yarn.scheduler.minimum-allocation-mb: '1024'
+    scale: 1
+    start_on_create: true
+  bootstrap-hdfs:
+    metadata:
+      hdfs-site: *id001
+      core-site: *id002
+    scale: 1
+    start_on_create: true
+  datanode:
+    metadata:
+      hdfs-site: &id003
+        dfs.replication: '3'
+        dfs.webhdfs.enabled: 'true'
+      core-site: &id004
+        hadoop.proxyuser.hue.groups: '*'
+        hadoop.proxyuser.hue.hosts: '*'
+    scale: 1
+    start_on_create: true
+  datanode-data:
+    metadata:
+      hdfs-site: *id003
+      core-site: *id004
+    scale: 1
+    start_on_create: true
+  jobhistory-server-config:
+    metadata:
+      hdfs-site: &id005
+        dfs-replication: '3'
+        dfs.webhdfs.enabled: 'true'
+      mapred-site: &id006
+        mapreduce.map.java.opts: -Xmx768m
+        mapreduce.map.memory.mb: '1024'
+        mapreduce.reduce.java.opts: -Xmx1536m
+        mapreduce.reduce.memory.mb: '2048'
+      core-site: &id007
+        hadoop.proxyuser.hue.groups: '*'
+        hadoop.proxyuser.hue.hosts: '*'
+      yarn-site: &id008
+        yarn.log-aggregation-enable: 'true'
+        yarn.log-aggregation.retain-check-interval-seconds: 3600
+        yarn.log-aggregation.retain-seconds: 10800
+        yarn.nodemanager.aux-services: mapreduce_shuffle
+        yarn.nodemanager.resource.cpu-vcores: '8'
+        yarn.nodemanager.resource.memory-mb: '8192'
+        yarn.scheduler.minimum-allocation-mb: '1024'
+    scale: 1
+    start_on_create: true
+  jobhistory-server:
+    metadata:
+      hdfs-site: *id005
+      mapred-site: *id006
+      core-site: *id007
+      yarn-site: *id008
+    scale: 1
+    start_on_create: true
+  yarn-resourcemanager-data:
+    metadata:
+      hdfs-site: &id013
+        dfs-replication: '3'
+        dfs.webhdfs.enabled: 'true'
+      mapred-site: &id014
+        mapreduce.map.java.opts: -Xmx768m
+        mapreduce.map.memory.mb: '1024'
+        mapreduce.reduce.java.opts: -Xmx1536m
+        mapreduce.reduce.memory.mb: '2048'
+      core-site: &id015
+        hadoop.proxyuser.hue.groups: '*'
+        hadoop.proxyuser.hue.hosts: '*'
+      yarn-site: &id016
+        yarn.log-aggregation-enable: 'true'
+        yarn.log-aggregation.retain-check-interval-seconds: 3600
+        yarn.log-aggregation.retain-seconds: 10800
+        yarn.nodemanager.aux-services: mapreduce_shuffle
+        yarn.nodemanager.resource.cpu-vcores: '8'
+        yarn.nodemanager.resource.memory-mb: '8192'
+        yarn.scheduler.minimum-allocation-mb: '1024'
+    scale: 1
+    start_on_create: true
+  namenode-primary:
+    metadata:
+      hdfs-site: *id001
+      core-site: *id002
+    scale: 1
+    start_on_create: true
+  jobhistory-server-data:
+    metadata:
+      hdfs-site: *id005
+      mapred-site: *id006
+      core-site: *id007
+      yarn-site: *id008
+    scale: 1
+    start_on_create: true
+  namenode-config:
+    metadata:
+      hdfs-site: *id001
+      core-site: *id002
+    scale: 1
+    start_on_create: true
+  yarn-nodemanager:
+    metadata:
+      hdfs-site: *id009
+      mapred-site: *id010
+      core-site: *id011
+      yarn-site: *id012
+    scale: 1
+    start_on_create: true
+  datanode-config:
+    metadata:
+      hdfs-site: *id003
+      core-site: *id004
+    scale: 1
+    start_on_create: true
+  yarn-resourcemanager-config:
+    metadata:
+      hdfs-site: *id013
+      mapred-site: *id014
+      core-site: *id015
+      yarn-site: *id016
+    scale: 1
+    start_on_create: true
+  sl-yarn-resourcemanager-config:
+    metadata:
+      hdfs-site: *id013
+      mapred-site: *id014
+      core-site: *id015
+      yarn-site: *id016
+    scale: 1
+    start_on_create: true
+  yarn-resourcemanager:
+    metadata:
+      hdfs-site: *id013
+      mapred-site: *id014
+      core-site: *id015
+      yarn-site: *id016
+    scale: 1
+    start_on_create: true
+  yarn-nodemanager-config:
+    metadata:
+      hdfs-site: *id009
+      mapred-site: *id010
+      core-site: *id011
+      yarn-site: *id012
+    scale: 1
+    start_on_create: true
+  namenode-primary-data:
+    metadata:
+      hdfs-site: *id001
+      core-site: *id002
+    scale: 1
+    start_on_create: true

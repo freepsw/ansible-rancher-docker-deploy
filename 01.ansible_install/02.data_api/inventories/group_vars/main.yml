@@ -1,0 +1,33 @@
+---
+
+
+docker_home : /home/rts/apps/docker
+docker:
+  image_dir : "{{docker_home}}/images"
+  tar_dir  : "{{docker_home}}/app_tar"
+  dockerfile_dir: "{{docker_home}}/dockerfile"
+
+data_api:
+  zip_filename: "core-rest-api-0.0.1-SNAPSHOT-bin.tar.gz"
+  unzip_dir   : "{{ docker.tar_dir }}/core-rest-api-0.0.1-SNAPSHOT"
+  container_name: "dpcore/data-api:v0.0.1"
+  conf_file:
+    - agent.properties
+    - config-api-server.properties
+    - config-workflow.properties
+    - dataaccess.properties
+  mariadb_servers:
+    - dataplatform04
+    - dataplatform16.skcc.com
+
+ftp_server : ftp://rts:!rts!@10.178.50.103/dpcore/
+
+# docker_home_dir : /home/rts/apps/docker
+# docker_image_dir: {{docker_home_dir}}/images
+# docker_data_dir :
+#   - images
+#   - dump
+#
+#
+# docker_images:
+#   - core-verticle.tar.gz

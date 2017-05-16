@@ -1,0 +1,18 @@
+---
+
+#__docker_repo_url: https://download.docker.com/linux/{{ ansible_distribution | lower }}/docker-ce.repo
+#__docker_package: docker-ce
+#__docker_version: 17.03.0.ce-1.el7.centos
+#__docker_repo_key: https://yum.dockerproject.org/gpg
+#__docker_build: stable
+__docker_pre_packages:
+  - yum-utils
+  - python-setuptools
+
+# Old versions
+##############
+__docker_repo_url: https://yum.dockerproject.org/repo/main/{{ ansible_distribution | lower }}/7/
+__docker_package: docker-engine
+__docker_version: 1.12.5-1.el7.centos
+__docker_repo_key: https://yum.dockerproject.org/gpg
+__docker_build: stable

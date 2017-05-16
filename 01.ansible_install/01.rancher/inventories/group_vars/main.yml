@@ -1,0 +1,7 @@
+---
+
+rancher_name: rancher_server
+rancher_server: "{{ hostvars['rancher']['ansible_ssh_host'] }}"
+rancher_version: v1.5.6
+rancher_port: 8080
+rancher_agent_name: "agent"

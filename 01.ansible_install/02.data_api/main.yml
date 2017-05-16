@@ -1,0 +1,6 @@
+- name: Jobs for deploying data-api container
+  hosts: "cloudz"
+  vars_files:
+    - inventories/group_vars/main.yml
+  roles:
+    - role: data-mgmt

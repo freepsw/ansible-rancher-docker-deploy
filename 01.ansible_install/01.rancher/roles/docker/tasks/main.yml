@@ -1,0 +1,31 @@
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- include: docker-redhat.yml
+  when: ansible_os_family == 'RedHat'
+  static: no
+
+- include: docker-debian.yml
+  when: ansible_os_family == 'Debian'
+  static: no
+
+- name: Create a docker group
+  group:
+      name=docker
+      state=present
+
+- name: Add user(s) to docker group
+  user:
+      name={{ item }}
+      groups=docker
+      state=present
+      append=yes
+  with_items: "{{ docker_users }}"
+  when: docker_users is defined
+
+- name : start docker
+  service:
+    name: docker
+    enabled: yes
+    state: started
+  become: true
