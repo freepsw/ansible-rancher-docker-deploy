@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  vertx-web:
+    image: 'core/verticle'
+    ports:
+      - 7070
+    links:
+      - 'mariadb-test'
+    depends_on:
+      - 'mariadb-test'
+
+  mariadb-test:
+    image: 'mariadb:10.1'
+    command: mysqld --innodb-buffer-pool-size=20M
+    volumes:
+      - "/home/rts/apps/docker/datapi/dump:/docker-entrypoint-initdb.d"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=my-secret"
+    ports:
+      - "3306:3306"
+
+  lb:
+    image: dockercloud/haproxy
+    depends_on:
+      - 'vertx-web'
+    links:
+      - 'vertx-web'
+    ports:
+      - '7070:80'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
