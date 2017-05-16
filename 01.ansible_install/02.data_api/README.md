@@ -17,7 +17,7 @@
 > docker run -ti -p 7070:7070 --link mariadb-test dpcore/data-api:v0.0.1
 
 #  docker run 시점에 "/etc/hosts"에 host를 추가할 경우 (--add-host hosname:ip)
-> docker run -ti --add-host=dataplatform03:169.56.74.87 --add-host=dataplatform03.skcc.com:10.178.50.113 -p 7070:7070 --link mariadb-test dpcore/data-api:v0.0.1
+> docker run -ti --add-host=dataplatform03:10.178.50.113 --add-host=dataplatform03.skcc.com:10.178.50.113 -p 7070:7070 --link mariadb-test dpcore/data-api:v0.0.1
 ```
 
 - mariadb table alter
@@ -64,7 +64,7 @@ ALTER TABLE WFS_SCHEDULE_JOB ADD (owner VARCHAR(255));
 -H 'Accept: application/json' \
 -H 'Content-Type: application/json' \
 -d '{"name":"test-stack-01", "system":false, "dockerCompose":"", "rancherCompose":"", "binding":null}' \
-'http://169.56.124.19:8080/v2-beta/projects/1a5/stacks'
+'http://10.178.50.103:8080/v2-beta/projects/1a5/stacks'
 ```
 
 - http request

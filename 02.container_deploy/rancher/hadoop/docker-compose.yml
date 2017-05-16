@@ -1,0 +1,230 @@
+version: '2'
+volumes:
+  hadoop-datanode-config:
+    external: true
+    driver: 'null'
+  hadoop-yarn-nodemanager-config:
+    external: true
+    driver: 'null'
+  hadoop-namenode-primary-config:
+    external: true
+    driver: 'null'
+  hadoop-jobhistory-config:
+    external: true
+    driver: 'null'
+  hadoop-yarn-resourcemanager-config:
+    external: true
+    driver: 'null'
+services:
+  sl-namenode-config:
+    image: rancher/hadoop-followers-config:v0.3.5
+    environment:
+      NODETYPE: hdfs
+    network_mode: container:namenode-primary
+    volumes_from:
+    - namenode-primary-data
+  yarn-nodemanager-data:
+    image: rancher/hadoop-base:v0.3.5
+    network_mode: none
+    volumes:
+    - /tmp
+    - hadoop-yarn-nodemanager-config:/etc/hadoop
+    links:
+    - namenode-primary:namenode
+    - yarn-resourcemanager:yarn-rm
+    command:
+    - /bootstrap-local.sh
+    labels:
+      io.rancher.container.start_once: 'true'
+  bootstrap-hdfs:
+    image: rancher/hadoop-base:v0.3.5
+    network_mode: container:namenode-primary
+    volumes_from:
+    - namenode-primary-data
+    command:
+    - su
+    - -c
+    - sleep 20 && exec /bootstrap-hdfs.sh
+    - hdfs
+    labels:
+      io.rancher.container.start_once: 'true'
+  datanode:
+    image: rancher/hadoop-base:v0.3.5
+    links:
+    - namenode-primary:namenode
+    volumes_from:
+    - datanode-data
+    command:
+    - su
+    - -c
+    - sleep 45 && exec /usr/local/hadoop-2.7.1/bin/hdfs datanode
+    - hdfs
+    labels:
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/namenode-primary,io.rancher.stack_service.name=$${stack_name}/yarn-resourcemanager
+      io.rancher.sidekicks: datanode-config,datanode-data
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+  datanode-data:
+    image: rancher/hadoop-base:v0.3.5
+    network_mode: none
+    volumes:
+    - /tmp
+    - hadoop-datanode-config:/etc/hadoop
+    links:
+    - namenode-primary:namenode
+    command:
+    - /bootstrap-local.sh
+    labels:
+      io.rancher.container.start_once: 'true'
+  jobhistory-server-config:
+    image: rancher/hadoop-config:v0.3.5
+    network_mode: container:jobhistory-server
+    links:
+    - namenode-primary:namenode
+    - yarn-resourcemanager:yarn-rm
+    volumes_from:
+    - jobhistory-server-data
+  jobhistory-server:
+    image: rancher/hadoop-base:v0.3.5
+    links:
+    - namenode-primary:namenode
+    - yarn-resourcemanager:yarn-rm
+    volumes_from:
+    - jobhistory-server-data
+    ports:
+    - 10020:10020/tcp
+    - 19888:19888/tcp
+    command:
+    - su
+    - -c
+    - sleep 45 && /usr/local/hadoop-2.7.1/bin/mapred historyserver
+    - mapred
+    labels:
+      io.rancher.sidekicks: jobhistory-server-config,jobhistory-server-data
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:container_label: io.rancher.stack_service.name=$${stack_name}/yarn-resourcemanager,io.rancher.stack_service.name=$${stack_name}/namenode-primary
+  yarn-resourcemanager-data:
+    image: rancher/hadoop-base:v0.3.5
+    network_mode: none
+    volumes:
+    - /tmp
+    - hadoop-yarn-resourcemanager-config:/etc/hadoop
+    links:
+    - namenode-primary:namenode
+    command:
+    - /bootstrap-local.sh
+    labels:
+      io.rancher.container.start_once: 'true'
+  namenode-primary:
+    image: rancher/hadoop-base:v0.3.5
+    volumes_from:
+    - namenode-primary-data
+    ports:
+    - 50070:50070/tcp
+    command:
+    - su
+    - -c
+    - sleep 15 && /usr/local/hadoop-2.7.1/bin/hdfs namenode
+    - hdfs
+    labels:
+      io.rancher.sidekicks: namenode-config,sl-namenode-config,bootstrap-hdfs,namenode-primary-data
+      io.rancher.scheduler.affinity:container_label_soft: io.rancher.stack_service.name=$${stack_name}/yarn-resourcemanager,io.rancher.stack_service.name=$${stack_name}/jobhistory-server
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=$${stack_name}/datanode
+  jobhistory-server-data:
+    image: rancher/hadoop-base:v0.3.5
+    network_mode: none
+    volumes:
+    - /tmp
+    - hadoop-jobhistory-config:/etc/hadoop
+    links:
+    - namenode-primary:namenode
+    - yarn-resourcemanager:yarn-rm
+    command:
+    - /bootstrap-local.sh
+    labels:
+      io.rancher.container.start_once: 'true'
+  namenode-config:
+    image: rancher/hadoop-config:v0.3.5
+    network_mode: container:namenode-primary
+    volumes_from:
+    - namenode-primary-data
+  yarn-nodemanager:
+    image: rancher/hadoop-base:v0.3.5
+    links:
+    - namenode-primary:namenode
+    - yarn-resourcemanager:yarn-rm
+    volumes_from:
+    - yarn-nodemanager-data
+    ports:
+    - 8042:8042/tcp
+    command:
+    - su
+    - -c
+    - sleep 45 && exec /usr/local/hadoop-2.7.1/bin/yarn nodemanager
+    - yarn
+    labels:
+      io.rancher.scheduler.affinity:container_label_soft_ne: io.rancher.stack_service.name=$${stack_name}/namenode-primary,io.rancher.stack_service.name=$${stack_name}/yarn-resourcemanager,io.rancher.stack_service.name=$${stack_name}/jobhistory-server,
+      io.rancher.sidekicks: yarn-nodemanager-config,yarn-nodemanager-data
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name}
+      io.rancher.scheduler.affinity:container_label: io.rancher.stack_service.name=$${stack_name}/datanode
+  datanode-config:
+    image: rancher/hadoop-config:v0.3.5
+    network_mode: container:datanode
+    links:
+    - namenode-primary:namenode
+    volumes_from:
+    - datanode-data
+  yarn-resourcemanager-config:
+    image: rancher/hadoop-config:v0.3.5
+    network_mode: container:yarn-resourcemanager
+    links:
+    - namenode-primary:namenode
+    volumes_from:
+    - yarn-resourcemanager-data
+  sl-yarn-resourcemanager-config:
+    image: rancher/hadoop-followers-config:v0.3.5
+    environment:
+      NODETYPE: yarn
+    network_mode: container:yarn-resourcemanager
+    links:
+    - namenode-primary:namenode
+    volumes_from:
+    - yarn-resourcemanager-data
+  yarn-resourcemanager:
+    image: rancher/hadoop-base:v0.3.5
+    links:
+    - namenode-primary:namenode
+    volumes_from:
+    - yarn-resourcemanager-data
+    ports:
+    - 8088:8088/tcp
+    command:
+    - su
+    - -c
+    - sleep 30 && /usr/local/hadoop-2.7.1/bin/yarn resourcemanager
+    - yarn
+    labels:
+      io.rancher.sidekicks: yarn-resourcemanager-config,sl-yarn-resourcemanager-config,yarn-resourcemanager-data
+      io.rancher.container.hostname_override: container_name
+      io.rancher.scheduler.affinity:container_label: io.rancher.stack_service.name=$${stack_name}/namenode-primary
+      io.rancher.scheduler.affinity:container_label_ne: io.rancher.stack_service.name=$${stack_name}/$${service_name},io.rancher.stack_service.name=$${stack_name}/datanode,io.rancher.stack_service.name=$${stack_name}/yarn-nodemanager
+  yarn-nodemanager-config:
+    image: rancher/hadoop-config:v0.3.5
+    network_mode: container:yarn-nodemanager
+    links:
+    - namenode-primary:namenode
+    - yarn-resourcemanager:yarn-rm
+    volumes_from:
+    - yarn-nodemanager-data
+  namenode-primary-data:
+    image: rancher/hadoop-base:v0.3.5
+    network_mode: none
+    volumes:
+    - /tmp
+    - hadoop-namenode-primary-config:/etc/hadoop
+    command:
+    - /bootstrap-local.sh
+    labels:
+      io.rancher.container.start_once: 'true'

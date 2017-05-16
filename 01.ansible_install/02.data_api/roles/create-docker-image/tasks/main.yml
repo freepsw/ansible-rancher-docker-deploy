@@ -1,0 +1,58 @@
+- name: Create  working directory
+  file:
+    path: '{{ docker_home }}'
+    state: directory
+    owner: rts
+    group: rts
+#  with_items: '{{ docker_dir }}'
+
+
+- name: Copy data files for docker container
+  copy:
+    src: data/
+    dest: '{{ docker_home }}'
+    owner: rts
+    group: rts
+
+# - name: Download data-api binary file from ftp server
+#   get_url: url={{ftp_server}}/{{data_api.zip_filename}} dest={{docker.file_dir}}
+#   register: get_url_result
+
+- name: Unarchive the data-api zip file from ftp server
+  unarchive:
+    src: "{{ftp_server}}{{data_api.zip_filename}}"
+    dest: "{{docker.tar_dir}}"
+    remote_src: True
+
+- name: Replace the hostname of MariaDB server to container name "mariadb-test" in configuration file
+  shell: sed -i "s/jdbc:mariadb:\/\/dataplatform16/jdbc:mariadb:\/\/mariadb-test/g;s/jdbc:mysql:\/\/dataplatform16\.skcc\.com/jdbc:mysql:\/\/mariadb-test/g;s/jdbc:mysql:\/\/dataplatform04/jdbc:mariadb:\/\/mariadb-test/g" {{ item }}
+  args:
+      chdir: "{{ data_api.unzip_dir }}/conf"
+  ignore_errors: True
+  with_items: '{{ data_api.conf_file }}'
+
+
+- name: Copy Dockerfile(data-api) to unzipped directory of data-api application
+  copy:
+    src: "data/dockerfile/Dockerfile"
+    dest: "{{ data_api.unzip_dir }}"
+    owner: rts
+    group: rts
+
+
+- name: Build image using Dockerfile for data-api
+  docker_image:
+    path: '{{ data_api.unzip_dir }}'
+    name: '{{ data_api.container_name }}'
+#    dockerfile: "{{data_api.unzip_dir}}/Dockerfile_data-api"
+
+# - name: Load image from archive
+#   docker_image:
+#     name: dpcore/data-api:v0.0.1
+#     tag: v1
+#     load_path: '{{ docker.image_dir }}'/dpcore-data-api-v0.0.1.tar.gz
+
+# - name: Load image from archive and push to a private registry
+#   docker_image:
+#     name: core/verticle
+#     load_path: /home/rts/apps/docker/images/core-verticle.tar.gz
