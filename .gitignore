@@ -2,7 +2,7 @@
 staging
 hosts
 rancher-hosts
-/dump/
+dump
 
 # Directories #
 /build/
