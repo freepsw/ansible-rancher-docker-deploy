@@ -1,0 +1,5 @@
+---
+
+ssh:
+  user: "rts"
+  password: "!rts!"

@@ -1,33 +1,20 @@
-- name: Create  working directory
+
+- name: Create data-api unzipped directory
   file:
-    path: '{{ docker_home }}'
+    path: "{{ docker_home }}/{ docker.tar_dir }}"
     state: directory
-    owner: rts
-    group: rts
-#  with_items: '{{ docker_dir }}'
 
-
-- name: Copy data files for docker container
-  copy:
-    src: data/
-    dest: '{{ docker_home }}'
-    owner: rts
-    group: rts
-
-# - name: Download data-api binary file from ftp server
-#   get_url: url={{ftp_server}}/{{data_api.zip_filename}} dest={{docker.file_dir}}
-#   register: get_url_result
-
-- name: Unarchive the data-api zip file from ftp server
+- name: Unarchive the data-api zip file fetched from ftp server
   unarchive:
-    src: "{{ftp_server}}{{data_api.zip_filename}}"
+    src: "{{ftp_server}}{{data_api.ftp_filename}}"
     dest: "{{docker.tar_dir}}"
     remote_src: True
+
 
 - name: Replace the hostname of MariaDB server to container name "mariadb-test" in configuration file
   shell: sed -i "s/jdbc:mariadb:\/\/dataplatform16/jdbc:mariadb:\/\/mariadb-test/g;s/jdbc:mysql:\/\/dataplatform16\.skcc\.com/jdbc:mysql:\/\/mariadb-test/g;s/jdbc:mysql:\/\/dataplatform04/jdbc:mariadb:\/\/mariadb-test/g" {{ item }}
   args:
-      chdir: "{{ data_api.unzip_dir }}/conf"
+      chdir: "{{ data_api.ftp_unzip_dir }}/conf"
   ignore_errors: True
   with_items: '{{ data_api.conf_file }}'
 
@@ -35,24 +22,35 @@
 - name: Copy Dockerfile(data-api) to unzipped directory of data-api application
   copy:
     src: "data/dockerfile/Dockerfile"
-    dest: "{{ data_api.unzip_dir }}"
-    owner: rts
-    group: rts
+    dest: "{{ data_api.ftp_unzip_dir }}"
 
 
 - name: Build image using Dockerfile for data-api
   docker_image:
-    path: '{{ data_api.unzip_dir }}'
+    path: '{{ data_api.ftp_unzip_dir }}'
     name: '{{ data_api.container_name }}'
 #    dockerfile: "{{data_api.unzip_dir}}/Dockerfile_data-api"
 
-# - name: Load image from archive
-#   docker_image:
-#     name: dpcore/data-api:v0.0.1
-#     tag: v1
-#     load_path: '{{ docker.image_dir }}'/dpcore-data-api-v0.0.1.tar.gz
 
-# - name: Load image from archive and push to a private registry
-#   docker_image:
-#     name: core/verticle
-#     load_path: /home/rts/apps/docker/images/core-verticle.tar.gz
+- name: Save docker image to archive file
+  docker_image:
+    name: '{{ data_api.container_name }}'
+    tag: v1
+    archive_path: "{{ docker.image_dir }}/{{ docker.image_save_file }}"
+
+- name: Send arhived image file to rancher host
+  shell: "scp {{ docker.image_dir }}/{{ docker.image_save_file }} rts@{{ hostvars[item]['ansible_ssh_host'] }}:{{ docker.image_dir }}/{{ docker.image_save_file }}"
+  with_inventory_hostnames:
+    - Agents
+
+
+- name: Load data-api image from archive
+  docker_image:
+    name: '{{ data_api.container_name }}'
+    load_path: "{{ docker.image_dir }}/{{ docker.image_save_file }}"
+
+
+# - debug:
+#     msg: "{{ hostvars[item]['ansible_ssh_host'] }}"
+#   with_inventory_hostnames:
+#     - Agents

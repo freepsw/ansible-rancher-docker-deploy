@@ -4,12 +4,14 @@
 docker_home : /home/rts/apps/docker
 docker:
   image_dir : "{{docker_home}}/images"
+  image_save_file: "dpcore-data-api-v0.0.1.tar.gz"
   tar_dir  : "{{docker_home}}/app_tar"
   dockerfile_dir: "{{docker_home}}/dockerfile"
 
+
 data_api:
-  zip_filename: "core-rest-api-0.0.1-SNAPSHOT-bin.tar.gz"
-  unzip_dir   : "{{ docker.tar_dir }}/core-rest-api-0.0.1-SNAPSHOT"
+  ftp_filename: "core-rest-api-0.0.1-SNAPSHOT-bin.tar.gz"
+  ftp_unzip_dir   : "{{ docker.tar_dir }}/core-rest-api-0.0.1-SNAPSHOT"
   container_name: "dpcore/data-api:v0.0.1"
   conf_file:
     - agent.properties

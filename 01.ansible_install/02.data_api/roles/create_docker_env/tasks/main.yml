@@ -1,0 +1,16 @@
+- name: Create  working directory in Rancher-Server
+  file:
+    path: '{{ docker_home }}'
+    state: directory
+#  with_items: '{{ docker_dir }}'
+
+
+- name: Copy local data files for docker container to Rancher-Server
+  copy:
+    src: data/
+    dest: '{{ docker_home }}'
+
+- name: Create docker image directory
+  file:
+    path: '{{ docker.image_dir }}'
+    state: directory

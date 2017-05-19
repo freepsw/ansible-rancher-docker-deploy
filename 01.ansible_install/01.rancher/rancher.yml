@@ -13,6 +13,14 @@
 #  roles:
 #    - { role: rancher, tags: ["rancher"] }
 
+# - name: Register Rancher Hosts
+#   hosts: "Agents"
+#   become: yes
+#   vars_files:
+#     - inventories/group_vars/main.yml
+#   roles:
+#     - { role: rancher_reg, tags: ["rancher_reg"] }
+
 - name: Register Rancher Hosts
   hosts: "Agents"
   become: yes

@@ -1,0 +1,11 @@
+
+- name : create ssh key file
+  shell: ssh-keygen -t rsa -f ~/.ssh/id_rsa -q -N ""
+  args:
+    creates: ~/.ssh/id_rsa
+
+- name: fetch public key
+  fetch:
+    src: ~/.ssh/id_rsa.pub
+    dest: data/
+    flat: yes

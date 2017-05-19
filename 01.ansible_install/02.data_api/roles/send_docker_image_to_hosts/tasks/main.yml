@@ -1,0 +1,38 @@
+# - name: Archive data-api docker image
+#   docker_image:
+#     name: '{{ data_api.container_name }}'
+#     tag: v1
+#     archive_path: "{{ docker.image_dir }}/data-api-image.tar.gz"
+
+# - name: Fetch arhchived image file to localhost data/images
+#   vars:
+#       date: "{{ lookup('pipe', 'date +%Y%m%d-%H%M') }}"
+#   fetch:
+#     src: "{{ docker.image_dir }}/data-api-image.tar.gz"
+#     dest: data/images/
+
+
+# - name : install sshpass command
+#   yum:
+#     name: sshpass
+#     state: present
+#
+# - name: copy ssh key to remote server
+#   shell: "sshpass -p !rts! ssh-copy-id -i /home/rts/.ssh/id_rsa.pub -o StrictHostKeyChecking=no rts@169.56.74.84"
+#
+
+- name: copy file
+  shell: scp somelog.txt rts@169.56.74.84:/home/rts/
+  args:
+    chdir: /home/rts
+
+# - name: Load image from archive
+#   docker_image:
+#     name: dpcore/data-api:v0.0.1
+#     tag: v1
+#     load_path: '{{ docker.image_dir }}'/dpcore-data-api-v0.0.1.tar.gz
+
+# - name: Load image from archive and push to a private registry
+#   docker_image:
+#     name: core/verticle
+#     load_path: /home/rts/apps/docker/images/core-verticle.tar.gz

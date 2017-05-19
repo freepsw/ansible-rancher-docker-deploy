@@ -1,0 +1,31 @@
+---
+
+# - name: Register Rancher Hosts
+#   hosts: localhost
+#   vars_files:
+#     - inventories/group_vars/main.yml
+#   roles:
+#     - { role: create_ssh_key }
+#
+# - name: copy server's public key to agent server
+#   hosts: "all"
+#   become: yes
+#   vars_files:
+#     - inventories/group_vars/main.yml
+#   roles:
+#     - { role: copy-ssh-id }
+
+
+- name: Register Rancher Hosts
+  hosts: "Server"
+  vars_files:
+    - inventories/group_vars/main.yml
+  roles:
+    - { role: create_ssh_key }
+
+- name: copy server's public key to agent server
+  hosts: all
+  vars_files:
+    - inventories/group_vars/main.yml
+  roles:
+    - { role: copy-ssh-id }

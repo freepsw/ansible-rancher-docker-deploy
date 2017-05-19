@@ -1,5 +1,10 @@
 # Deploying data api application using rancher-api
 
+## Run all process using ansible-playbook
+```
+- ansible-playbook -i inventories/staging/hosts -v main.yml
+```
+
 ## PART 0. load docker image to every rancher hosts
 
 ### copy docker image to hosts
