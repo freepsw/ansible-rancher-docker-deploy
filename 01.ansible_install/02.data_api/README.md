@@ -1,31 +1,68 @@
-# Deploying data api application using rancher-api
+# Load the image for data api container using ansible (version 2.3)
 
-## Run all process using ansible-playbook
+## PART 1. Design the ansible roles for loading data api container image
+
+### 전체 작업 프로세스 설명
+1. create_docker_env
+ - 대상서버 : all hosts
+ - data api용 docker image를 생성하기 위해 필요한 파일을 복사
+
+2. build-docker-image
+ - 대상서버 : Rancher-Server
+ - FTP 서버를 통해 data api 실행에 필요한 파일을 다운받는다.
+ - 압축을 해제하고, 필요한 설정(hostname, jdbc, hdfs ...)값을 변경한다.
+ - Dockerfile을 이용하여 docker image를 build한다. (docker image는 한곳에서만 build)
+ - Build된 docker image를 save하여 압축파일로 저장한다.
+ - Save된 docker image 파일을 모든 host에 복사한다.  
+   (scp를 이용한 전송, 사전에 ssh연결이 되어 있어야 함. 00.system > ssh관련 role 활용)
+ -
+
+3. load_docker_image
+ - 대상서버 : "Agents" (Rancher-Server를 제외한 host, rancher-server에는 app를 배포하지 않음)
+ - "build-docker-image" role에서 복사된 압축파일을 이용하여 docker image를 load한다.
+ - docker-hub에 image가 없어도 docker 실행이 가능해짐
+
+### ansible-playbook code
+
+```yml
+- name: Build docker image using data-api tar file
+  hosts: all
+  vars_files:
+    - inventories/group_vars/main.yml
+  roles:
+    - role: create_docker_env
+
+- name: Build docker image using data-api tar file
+  hosts: "Rancher-Server"
+  vars_files:
+    - inventories/group_vars/main.yml
+  roles:
+      - build-docker-image
+
+- name: Load docker image from archived file
+  hosts: "Agents"
+  vars_files:
+    - inventories/group_vars/main.yml
+  roles:
+      - load_docker_image
+```
+
+### Run all process using ansible-playbook
 ```
 - ansible-playbook -i inventories/staging/hosts -v main.yml
 ```
 
-## PART 0. load docker image to every rancher hosts
 
-### copy docker image to hosts
-```
-```
+## PART 2. Test deployed docker image
 
-### load a saved image file to docker image
-```
-> zcat dpcore-data-api-v0.0.1.tar.gz | docker load
-```
-
-### 등록된 docker image의 정상동작 확인
+### mariadb 구동 및 테스트
+- 테스트할 항목은 정상적으로 dump된 db를 import하였는지 확인한다.
+- 확인할 DB = wfs, user = wfs, pw = wfs
 ```
 > docker run -v /home/rts/apps/docker/dump:/docker-entrypoint-initdb.d -p 3306:3306 -e MYSQL_ROOT_PASSWORD='!mysql00' --name mariadb-test -d mariadb:10.1
-> docker run -ti -p 7070:7070 --link mariadb-test dpcore/data-api:v0.0.1
-
-#  docker run 시점에 "/etc/hosts"에 host를 추가할 경우 (--add-host hosname:ip)
-> docker run -ti --add-host=dataplatform03:10.178.50.113 --add-host=dataplatform03.skcc.com:10.178.50.113 -p 7070:7070 --link mariadb-test dpcore/data-api:v0.0.1
 ```
 
-- mariadb table alter
+- docker run 이후에 docker exec로 접속하여 아래의 mysql 접속(wfs계정) 후, script 실행 (mariadb table alter)
 ```
 ALTER TABLE WFS_NODE ADD (owner VARCHAR(255));
 ALTER TABLE WFS_NODE_GROUP ADD (owner VARCHAR(255));
@@ -36,55 +73,32 @@ ALTER TABLE WFS_SCHEDULE_JOB ADD (owner VARCHAR(255));
 ```
 
 
-# Jobs for deploying data-api
-
-## 1. hosts inventory
-
-
-## 2. Import images for data-api(vertx apps)
-
-
-
+### data-api 구동 및 테스트
+- 테스트할 항목은 browser를 통한 rest 요청시 정상 응답 확인
 ```
-> ansible-playbook -i inventories/staging/hosts main.yml
+> docker run -ti -p 7070:7070 --link mariadb-test dpcore/data-api:v0.0.1
 ```
-
-
-
-- rancher api key (Default)
- * Account API (Default)
-   * access-key : 82BEABA420F55EF34EFD
-   * secret-key : Gy3aG8byAgeAFhCU3GqMj6zjZn6g4HgT4nqr6LaG
- * Environment API Keys : EWF9yRKMEZJHc878V3cKmqbLAJnubjGtTPvm8JHM
-
-- BigData
- * Account API Keys : "publicValue": "DEDBAA19F37F524CAE02", "secretValue": "wkCzvGYk2KkcLhdTW7dCBH5hKoPQdY1wqs6NuSxU",
-
-
-#### create stack
-- curl command line
+- Web browser에서 아래의 주소 입력
 ```
- curl -u "${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}" \
--X POST \
--H 'Accept: application/json' \
--H 'Content-Type: application/json' \
--d '{"name":"test-stack-01", "system":false, "dockerCompose":"", "rancherCompose":"", "binding":null}' \
-'http://10.178.50.103:8080/v2-beta/projects/1a5/stacks'
+> curl http://<ip>:7070/api/v1/workflow
+> http://localhost:7070/api/v1/common/webhdfs/liststatus
+> http://<ip>:7070/api/v1/common/webhdfs/liststatus?webhdfsUrl=http://<ip>:50070/webhdfs/v1/user/
 ```
 
-- http request
-```
-HTTP/1.1 POST /v2-beta/projects/1a5/stacks
-Host: 169.56.124.19:8080
-Accept: application/json
-Content-Type: application/json
-Content-Length: 93
 
-{
-"name": "test-stack-01",
-"system": false,
-"dockerCompose": "",
-"rancherCompose": "",
-"binding": null
-}
+###  docker run 시점에 "/etc/hosts"에 host를 추가할 경우 (--add-host hosname:ip)
+- container link가 아닌, 외부 시스템에 hostname으로 접근할 필요가 있을때,
+- container os의 /etc/hosts 파일에 등록하기 위함.
+```
+> docker run -ti --add-host=dataplatform03:10.178.50.113 --add-host=dataplatform03.test.com:10.178.50.113 -p 7070:7070 --link mariadb-test dpcore/data-api:v0.0.1
+```
+
+
+
+## ETC
+### docker 명령어 정리
+```
+- save & load
+> docker save core/verticle | gzip > core-verticle.tar.gz
+> zcat core-verticle.tar.gz | docker load
 ```

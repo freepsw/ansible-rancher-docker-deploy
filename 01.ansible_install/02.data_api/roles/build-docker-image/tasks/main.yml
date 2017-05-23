@@ -44,12 +44,6 @@
     - Agents
 
 
-- name: Load data-api image from archive
-  docker_image:
-    name: '{{ data_api.container_name }}'
-    load_path: "{{ docker.image_dir }}/{{ docker.image_save_file }}"
-
-
 # - debug:
 #     msg: "{{ hostvars[item]['ansible_ssh_host'] }}"
 #   with_inventory_hostnames:

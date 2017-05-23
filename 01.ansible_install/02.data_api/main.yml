@@ -1,17 +1,16 @@
-# - name: Build docker image using data-api tar file
-#   hosts: all
-#   vars_files:
-#     - inventories/group_vars/main.yml
-#   roles:
-#     - role: create_docker_env
-#
-# - name: Build docker image using data-api tar file
-#   hosts: "Rancher-Server"
-#   vars_files:
-#     - inventories/group_vars/main.yml
-#   roles:
-#       - build-docker-image
-#       - send_docker_image_to_hosts
+- name: Build docker image using data-api tar file
+  hosts: all
+  vars_files:
+    - inventories/group_vars/main.yml
+  roles:
+    - role: create_docker_env
+
+- name: Build docker image using data-api tar file
+  hosts: "Rancher-Server"
+  vars_files:
+    - inventories/group_vars/main.yml
+  roles:
+      - build-docker-image
 
 
 - name: Load docker image from archived file
