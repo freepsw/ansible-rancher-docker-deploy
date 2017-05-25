@@ -15,12 +15,13 @@ services:
         source_port: 7070
         target_port: 7070
     health_check:
-      response_timeout: 2000
       healthy_threshold: 2
+      response_timeout: 2000
       port: 42
       unhealthy_threshold: 3
       initializing_timeout: 60000
       interval: 2000
+      strategy: recreate
       reinitializing_timeout: 60000
   mariadb-test:
     scale: 1

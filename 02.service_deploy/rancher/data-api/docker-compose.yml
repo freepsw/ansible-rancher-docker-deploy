@@ -1,7 +1,7 @@
 version: '2'
 services:
   vertx-web:
-    image: core/verticle
+    image: dpcore/data-api:v0.0.1
     stdin_open: true
     tty: true
     links:

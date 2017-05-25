@@ -80,7 +80,7 @@ ALTER TABLE WFS_SCHEDULE_JOB ADD (owner VARCHAR(255));
 ```
 - Web browser에서 아래의 주소 입력
 ```
-> curl http://<ip>:7070/api/v1/workflow
+> curl http://<ip>:7070/api/v1/workflow?requestUser=dpcore
 > http://localhost:7070/api/v1/common/webhdfs/liststatus
 > http://<ip>:7070/api/v1/common/webhdfs/liststatus?webhdfsUrl=http://<ip>:50070/webhdfs/v1/user/
 ```
@@ -101,4 +101,13 @@ ALTER TABLE WFS_SCHEDULE_JOB ADD (owner VARCHAR(255));
 - save & load
 > docker save core/verticle | gzip > core-verticle.tar.gz
 > zcat core-verticle.tar.gz | docker load
+```
+
+
+- clean up docker
+```
+> docker stop $(docker ps -q)
+> docker rm $(docker ps -a -q)
+> docker rmi $(docker images -q)
+> docker volume rm $(docker volume ls -q)
 ```

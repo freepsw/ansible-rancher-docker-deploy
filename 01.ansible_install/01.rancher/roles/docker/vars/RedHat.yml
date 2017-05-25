@@ -13,6 +13,6 @@ __docker_pre_packages:
 ##############
 __docker_repo_url: https://yum.dockerproject.org/repo/main/{{ ansible_distribution | lower }}/7/
 __docker_package: docker-engine
-__docker_version: 1.12.5-1.el7.centos
+__docker_version: 1.12.6-1.el7.centos
 __docker_repo_key: https://yum.dockerproject.org/gpg
 __docker_build: stable
