@@ -47,7 +47,7 @@
 - http://<rancher-server-ip>:8080/v2-beta/projects/1a5/stacks
 
 #### stack api 화면에서 "Create" 버튼을 클릭
-![stack create image] (http://blogfiles.naver.net/MjAxNzA1MjlfMTI4/MDAxNDk2MDQ3OTY4MDA1.UF0xazacwbap9daPgocM-Y-B0ZECm_yorm1Izw89WPMg.i7ej1qn019G8FpEDHLAa-4p9C_elDz7znK6T0KwtGXMg.PNG.freepsw/image_8995992771496047872457.png)
+![stack create image](http://blogfiles.naver.net/MjAxNzA1MjlfMTI4/MDAxNDk2MDQ3OTY4MDA1.UF0xazacwbap9daPgocM-Y-B0ZECm_yorm1Izw89WPMg.i7ej1qn019G8FpEDHLAa-4p9C_elDz7znK6T0KwtGXMg.PNG.freepsw/image_8995992771496047872457.png)
 
 - "type"은 stack
 - name은 원하는 stack name을 지정
