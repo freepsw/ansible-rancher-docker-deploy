@@ -29,8 +29,8 @@
 
 
 ## STEP 2. Deploy services using rancher api
-- - https://docs.rancher.com/rancher/v1.6/en/api/v2-beta/ 참고
-- "Rancher Web-UI > API > Keys" 메뉴에서 "http://169.56.124.19:8080/v2-beta"를 클릭하면
+- https://docs.rancher.com/rancher/v1.6/en/api/v2-beta/ 참고
+- "Rancher Web-UI > API > Keys" 메뉴에서 "http://<rancher-server-ip>:8080/v2-beta"를 클릭하면
 - rancher에서 제공하는 다양한 API 목록이 표시된다.
 
 ### 1). Rancher Data-api STACK 생성
