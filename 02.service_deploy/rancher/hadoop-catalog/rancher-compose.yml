@@ -65,7 +65,7 @@ namenode-primary:
       hadoop.proxyuser.hue.hosts: "*"
       hadoop.proxyuser.hue.groups: "*"
     hdfs-site:
-      dfs.replication: "3"
+      dfs.replication: "${dfs_replication}"
       dfs.webhdfs.enabled: "true"
 datanode:
   scale: 1
@@ -77,21 +77,21 @@ yarn-resourcemanager:
       hadoop.proxyuser.hue.hosts: "*"
       hadoop.proxyuser.hue.groups: "*"
     hdfs-site:
-      dfs-replication: "3"
+      dfs-replication: "${dfs_replication}"
       dfs.webhdfs.enabled: "true"
     yarn-site:
-      yarn.nodemanager.resource.cpu-vcores: "8"
-      yarn.nodemanager.resource.memory-mb: "8192"
-      yarn.scheduler.minimum-allocation-mb: "1024"
+      yarn.nodemanager.resource.cpu-vcores: "${yarn_node_manager_cpu_vcores}"
+      yarn.nodemanager.resource.memory-mb: "${yarn_node_manager_resource_memory}"
+      yarn.scheduler.minimum-allocation-mb: "${yarn_minimum_allocation}"
       yarn.nodemanager.aux-services: "mapreduce_shuffle"
       yarn.log-aggregation-enable: "true"
       yarn.log-aggregation.retain-seconds: 10800
       yarn.log-aggregation.retain-check-interval-seconds: 3600
     mapred-site:
-      mapreduce.map.memory.mb: "1024"
-      mapreduce.reduce.memory.mb: "2048"
-      mapreduce.map.java.opts: "-Xmx768m"
-      mapreduce.reduce.java.opts: "-Xmx1536m"
+      mapreduce.map.memory.mb: "${mapreduce_map_memory}"
+      mapreduce.reduce.memory.mb: "${mapreduce_reduce_memory}"
+      mapreduce.map.java.opts: "${mapreduce_map_java_opts}"
+      mapreduce.reduce.java.opts: "${mapreduce_reduce_java_opts}"
 jobhistory-server:
   scale: 1
   metadata: *yarn_metadata

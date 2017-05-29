@@ -1,0 +1,9 @@
+cluster=hadoop
+dfs_replication=3
+yarn_node_manager_cpu_vcores=8
+yarn_node_manager_resource_memory=8192
+yarn_minimum_allocation=1024
+mapreduce_map_memory=1024
+mapreduce_reduce_memory=2048
+mapreduce_map_java_opts=-Xmx768m
+mapreduce_reduce_java_opts=-Xmx1536m

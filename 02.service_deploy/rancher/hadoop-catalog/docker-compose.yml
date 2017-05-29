@@ -33,7 +33,7 @@ namenode-primary:
 namenode-primary-data:
   image: rancher/hadoop-base:v0.3.5
   volumes:
-    - 'hadoop-namenode-primary-config:/etc/hadoop'
+    - '${cluster}-namenode-primary-config:/etc/hadoop'
     - '/tmp'
   net: none
   labels:
@@ -50,7 +50,7 @@ datanode-data:
   image: rancher/hadoop-base:v0.3.5
   net: none
   volumes:
-    - 'hadoop-datanode-config:/etc/hadoop'
+    - '${cluster}-datanode-config:/etc/hadoop'
     - '/tmp'
   labels:
     io.rancher.container.start_once: true
@@ -77,7 +77,7 @@ yarn-nodemanager-data:
   image: rancher/hadoop-base:v0.3.5
   net: none
   volumes:
-    - 'hadoop-yarn-nodemanager-config:/etc/hadoop'
+    - '${cluster}-yarn-nodemanager-config:/etc/hadoop'
     - '/tmp'
   labels:
     io.rancher.container.start_once: true
@@ -108,7 +108,7 @@ jobhistory-server-data:
   image: rancher/hadoop-base:v0.3.5
   net: none
   volumes:
-    - 'hadoop-jobhistory-config:/etc/hadoop'
+    - '${cluster}-jobhistory-config:/etc/hadoop'
     - '/tmp'
   labels:
     io.rancher.container.start_once: true
@@ -126,7 +126,7 @@ jobhistory-server:
   labels:
     io.rancher.sidekicks: jobhistory-server-config,jobhistory-server-data
     io.rancher.container.hostname_override: container_name
-    io.rancher.scheduler.affinity:container_label_soft: io.rancher.stack_service.name=$${stack_name}/yarn-resourcemanager,io.rancher.stack_service.name=$${stack_name}/namenode-primary
+    io.rancher.scheduler.affinity:container_label: io.rancher.stack_service.name=$${stack_name}/yarn-resourcemanager,io.rancher.stack_service.name=$${stack_name}/namenode-primary
   command: 'su -c "sleep 45 && /usr/local/hadoop-2.7.1/bin/mapred historyserver" mapred'
 
 yarn-resourcemanager-config:
@@ -145,7 +145,7 @@ yarn-resourcemanager-data:
   image: rancher/hadoop-base:v0.3.5
   net: none
   volumes:
-    - 'hadoop-yarn-resourcemanager-config:/etc/hadoop'
+    - '${cluster}-yarn-resourcemanager-config:/etc/hadoop'
     - '/tmp'
   labels:
     io.rancher.container.start_once: true
