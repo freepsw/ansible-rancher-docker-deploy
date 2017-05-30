@@ -4,7 +4,7 @@
   args:
     creates: ~/.ssh/id_rsa
 
-- name: fetch public key
+- name: fetch the public key to ansible manager server from rancher-server
   fetch:
     src: ~/.ssh/id_rsa.pub
     dest: data/

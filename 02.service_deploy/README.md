@@ -27,7 +27,6 @@
 #### Account KEY
 - 새로운 Environment를 생성하거나, 다수의 Environment에 접근이 가능하다. ("/v2-beta/projects"로 접근)
 
-
 ## STEP 2. Deploy services using rancher api
 - https://docs.rancher.com/rancher/v1.6/en/api/v2-beta/ 참고
 - "Rancher Web-UI > API > Keys" 메뉴에서 "http://<rancher-server-ip>:8080/v2-beta"를 클릭하면
@@ -70,6 +69,7 @@
 
 ```
 curl -u "${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}" \
+curl -u "3D0171ECDCB2F1075540:yCHjDUnhQc4NuwXc2VT5hJ3CbW7bKa7U7W7xfAsF" \
 -X POST \
 -H 'Accept: application/json' \
 -H 'Content-Type: application/json' \
@@ -170,11 +170,11 @@ curl -u "82BEABA420F55EF34EFD:Gy3aG8byAgeAFhCU3GqMj6zjZn6g4HgT4nqr6LaG" \
 ### Create stacks(ichat4) with docker-compose and rancher-compose
 
 ```
-curl -u "82BEABA420F55EF34EFD:Gy3aG8byAgeAFhCU3GqMj6zjZn6g4HgT4nqr6LaG" \
+curl -u "3D0171ECDCB2F1075540:yCHjDUnhQc4NuwXc2VT5hJ3CbW7bKa7U7W7xfAsF" \
 -X POST \
 -H 'Accept: application/json' \
 -H 'Content-Type: application/json' \
--d '{"name":"ichat4", "system":false, "dockerCompose":"{\r\n \"version\": \"2\", \r\n \"services\": {\r\n \"letschatapplb\": {\r\n \"image\": \"rancher/lb-service-haproxy:v0.6.2\", \r\n \"ports\": [\r\n \"80:80/tcp\"\r\n ], \r\n \"labels\": {\r\n \"io.rancher.container.agent.role\": \"environmentAdmin\", \r\n \"io.rancher.container.create_agent\": \"true\"\r\n }\r\n }, \r\n \"database\": {\r\n \"image\": \"mongo\", \r\n \"stdin_open\": true, \r\n \"tty\": true, \r\n \"labels\": {\r\n \"io.rancher.container.pull_image\": \"always\"\r\n }\r\n }, \r\n \"web\": {\r\n \"image\": \"sdelements/lets-chat\", \r\n \"stdin_open\": true, \r\n \"tty\": true, \r\n \"links\": [\r\n \"database:mongo\"\r\n ], \r\n \"labels\": {\r\n \"io.rancher.container.pull_image\": \"always\"\r\n }\r\n }\r\n }\r\n}", "rancherCompose":"{\r\n \"version\": \"2\", \r\n \"services\": {\r\n \"letschatapplb\": {\r\n \"scale\": 1, \r\n \"start_on_create\": true, \r\n \"lb_config\": {\r\n \"certs\": [], \r\n \"port_rules\": [\r\n {\r\n \"priority\": 1, \r\n \"protocol\": \"http\", \r\n \"service\": \"web\", \r\n \"source_port\": 80, \r\n \"target_port\": 8080\r\n }\r\n ]\r\n }, \r\n \"health_check\": {\r\n \"healthy_threshold\": 2, \r\n \"response_timeout\": 2000, \r\n \"port\": 42, \r\n \"unhealthy_threshold\": 3, \r\n \"interval\": 2000, \r\n \"strategy\": \"recreate\"\r\n }\r\n }, \r\n \"database\": {\r\n \"scale\": 1, \r\n \"start_on_create\": true\r\n }, \r\n \"web\": {\r\n \"scale\": 1, \r\n \"start_on_create\": true\r\n }\r\n }\r\n}", "binding":null}' \
+-d '{"name":"ichat4", "system":false, "dockerCompose":"{\r\n \"version\": \"2\", \r\n \"services\": {\r\n \"letschatapplb\": {\r\n \"image\": \"rancher/lb-service-haproxy:v0.6.2\", \r\n \"ports\": [\r\n \"80:80/tcp\"\r\n ], \r\n \"labels\": {\r\n \"io.rancher.container.agent.role\": \"environmentAdmin\", \r\n \"io.rancher.container.create_agent\": \"true\"\r\n }\r\n }, \r\n \"database\": {\r\n \"image\": \"mongo\", \r\n \"stdin_open\": true, \r\n \"tty\": true, \r\n \"labels\": {\r\n \"io.rancher.container.pull_image\": \"always\"\r\n }\r\n }, \r\n \"web\": {\r\n \"image\": \"sdelements/lets-chat\", \r\n \"stdin_open\": true, \r\n \"tty\": true, \r\n \"links\": [\r\n \"database:mongo\"\r\n ], \r\n \"labels\": {\r\n \"io.rancher.container.pull_image\": \"always\"\r\n }\r\n }\r\n }\r\n}", "rancherCompose":"{\r\n \"version\": \"2\", \r\n \"services\": {\r\n \"letschatapplb\": {\r\n \"scale\": 1, \r\n \"start_on_create\": true, \r\n \"lb_config\": {\r\n \"certs\": [], \r\n \"port_rules\": [\r\n {\r\n \"priority\": 1, \r\n \"protocol\": \"http\", \r\n \"service\": \"web\", \r\n \"source_port\": 80, \r\n \"target_port\": 8080\r\n }\r\n ]\r\n }, \r\n \"health_check\": {\r\n \"healthy_threshold\": 2, \r\n \"response_timeout\": 2000, \r\n \"port\": 42, \r\n \"unhealthy_threshold\": 3, \r\n \"interval\": 2000, \r\n \"strategy\": \"recreate\"\r\n }\r\n }, \r\n \"database\": {\r\n \"scale\": 1, \r\n \"start_on_create\": true\r\n }, \r\n \"web\": {\r\n \"scale\": 1, \r\n \"start_on_create\": true\r\n }\r\n }\r\n}", "startOnCreate":true, "binding":null}' \
 'http://<ip>:8080/v2-beta/projects/1a5/stacks'
 ```
 

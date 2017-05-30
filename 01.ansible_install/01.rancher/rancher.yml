@@ -1,9 +1,9 @@
 ---
-# - name: Installing and configuring Docker
-#   hosts: "Agents"
-#   become: yes
-#   roles:
-#    - { role: docker, tags: ["docker"] }
+- name: Installing and configuring Docker
+  hosts: "Agents"
+  become: yes
+  roles:
+   - { role: docker, tags: ["docker"] }
 
 - name: Setting up Rancher Server
   hosts: "Rancher"
@@ -20,11 +20,3 @@
     - inventories/group_vars/main.yml
   roles:
     - { role: rancher_reg, tags: ["rancher_reg"] }
-
-# - name: Register Rancher Hosts
-#   hosts: "Agents"
-#   become: yes
-#   vars_files:
-#     - inventories/group_vars/main.yml
-#   roles:
-#     - { role: rancher_reg, tags: ["rancher_reg"] }

@@ -19,7 +19,7 @@
   register: ssh_known_host_results
   ignore_errors: yes
 
-- name: print ip
+- name: print ip for debugging
   debug:
     msg: "IP is  {{ item.item.msg }}"
   with_items: "{{ ssh_known_host_results.results }}"
