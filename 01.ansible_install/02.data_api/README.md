@@ -1,6 +1,6 @@
-# Load the image for data api container using ansible (version 2.3)
+# Create  and load the docker image for data api using ansible (version 2.3)
 
-## PART 1. Design the ansible roles for loading data api container image
+## PART 1. Ansible roles for creating data api image
 
 ### 전체 작업 프로세스 설명
 1. create_docker_env
