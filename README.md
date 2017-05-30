@@ -14,11 +14,11 @@
 
 ### 2. Install & run docker & rancher server
 - https://github.com/freepsw/ansible-rancher-docker-deploy/tree/master/01.ansible_install/01.rancher
-### - docker instll & run
+#### - docker instll & run
 
-### - rancher server install & run
+#### - rancher server install & run
 
-### - register rancher hosts to rancher server
+#### - register rancher hosts to rancher server
 
 
 ### 3. Create and load the docker image for data-api
