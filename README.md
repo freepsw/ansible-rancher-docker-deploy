@@ -1,4 +1,4 @@
-# Deploying docker container using rancher and automating the deploy process using ansible-playbook
+# Managing docker container using rancher and automating the deploy process using ansible-playbook
 - perfect harmony of docker + rancher + ansible
 
 ## PART 1. Install the necessary software (Docker, Rancher)
