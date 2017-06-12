@@ -9,6 +9,11 @@
 -  Hadoop Eco 소프트웨어(Apache spark, Apache Kafka, Elasticsearch …)를 빠르게 설치 운영할 수 있어야 하고,
 -  이 모든 것이 자동화 될 수 있는 API기반으로 구현되어야 한다.
 
+##### 오픈소스 활용 방안
+![service architecture](https://github.com/freepsw/ansible-rancher-docker-deploy/blob/master/10.img/img_1.png)
+- Ansible로 필요한 서버설정을 자동화하고,
+- Dokcer & Rancher를 이용하여 서비스의 배포 및 운영을 효율적으로 수행한다.
+
 
 ### [오픈소스의 역할]
 #### Ansible 2.3.0
@@ -33,9 +38,18 @@
 - 배포관리 자동화를 위한 Open API를 제공하여, 전체 프로세스 자동화 가능
 
 #### 전체 구성도
-![service architecture](/path/to/img.jpg)
+- Web Service Cluster를 rancher stack을 생성하여 구성하고,
+- Hadoop Cluster를 또다른 rancher stack으로 분리하여 구성하고,
+- 상호간의 네트웍을 연결한다. (이때 Hadoop NameNode IP를 API로 조회해서 자동으로 설정해야함.)
+![img-1](https://github.com/freepsw/ansible-rancher-docker-deploy/blob/master/10.img/Img_2.png)
 
-## PART 1. Install the necessary software using ansible-playbook (Docker, Rancher)
+
+## STEP 1. Install the necessary software using ansible-playbook (Docker, Rancher)
+- Ansible로 rancher cluster 구성에 필요한 설치를 자동화한다.
+- 웹서비스 배포에 필요한 파일을 각 서버에 복사하고,
+- 이를 이용하여 웹서비스용 docker container image를 build한다.
+ - 만약 docker-hub를 이용할 수 있는 환경이라면, 사전에 docker image를 등록한다.
+![img-2](https://github.com/freepsw/ansible-rancher-docker-deploy/blob/master/10.img/Img_2.png)
 
 ### 1. Set ssh connection
 - https://github.com/freepsw/ansible-rancher-docker-deploy/tree/master/01.ansible_install/00.system
@@ -50,18 +64,22 @@
 ### 2. Install & run docker & rancher server using ansible-playbook
 - https://github.com/freepsw/ansible-rancher-docker-deploy/tree/master/01.ansible_install/01.rancher
 
-#### - docker install & run
-
-#### - rancher server install & run
-
-#### - register rancher hosts to rancher server
+- docker install & run
+- rancher server install & run
+- register rancher hosts to rancher server
 
 
-### 3. Create and load the docker image for data-api
-- https://github.com/freepsw/ansible-rancher-docker-deploy/tree/master/01.ansible_install/02.data_api
+### 3. Create and load the docker image for web-service
+- A https://github.com/freepsw/ansible-rancher-docker-deploy/tree/master/01.ansible_install/02.data_api
+
+- change configuration setting according to server environments
+- create docker image using web service install file at rancher master
+- copy created image file to rancher host and load copied image to docker
 
 
-## PART 2. Deploy service using rancher api
+## STEP 2. Deploy service using rancher api
 - https://github.com/freepsw/ansible-rancher-docker-deploy/tree/master/02.service_deploy
 - curl command를 이용하여, data-api service 배포
 - curl command를 이용하여, hadoop cluster 배포
+
+![img-3](https://github.com/freepsw/ansible-rancher-docker-deploy/blob/master/10.img/Img_3.png)
