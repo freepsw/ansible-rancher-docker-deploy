@@ -41,7 +41,7 @@
 - Web Service Cluster를 rancher stack을 생성하여 구성하고,
 - Hadoop Cluster를 또다른 rancher stack으로 분리하여 구성하고,
 - 상호간의 네트웍을 연결한다. (이때 Hadoop NameNode IP를 API로 조회해서 자동으로 설정해야함.)
-![img-1](https://github.com/freepsw/ansible-rancher-docker-deploy/blob/master/10.img/Img_2.png)
+![img-1](https://github.com/freepsw/ansible-rancher-docker-deploy/blob/master/10.img/Img_4.png)
 
 
 ## STEP 1. Install the necessary software using ansible-playbook (Docker, Rancher)
