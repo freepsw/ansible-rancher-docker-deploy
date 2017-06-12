@@ -79,7 +79,7 @@
 
 ## STEP 2. Deploy service using rancher api
 - https://github.com/freepsw/ansible-rancher-docker-deploy/tree/master/02.service_deploy
-- curl command를 이용하여, data-api service 배포
+- curl command를 이용하여, web service 배포
 - curl command를 이용하여, hadoop cluster 배포
 
 ![img-3](https://github.com/freepsw/ansible-rancher-docker-deploy/blob/master/10.img/Img_3.png)

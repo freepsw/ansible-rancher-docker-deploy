@@ -5,11 +5,11 @@
 ### 전체 작업 프로세스 설명
 1. create_docker_env
  - 대상서버 : all hosts
- - data api용 docker image를 생성하기 위해 필요한 파일을 복사
+ - web service(data-api)용 docker image를 생성하기 위해 필요한 파일을 복사
 
 2. build-docker-image
  - 대상서버 : Rancher-Server
- - FTP 서버를 통해 data api 실행에 필요한 파일을 다운받는다.
+ - FTP 서버를 통해 web service 실행에 필요한 파일을 다운받는다.
  - 압축을 해제하고, 필요한 설정(hostname, jdbc, hdfs ...)값을 변경한다.
  - Dockerfile을 이용하여 docker image를 build한다. (docker image는 한곳에서만 build)
  - Build된 docker image를 save하여 압축파일로 저장한다.
@@ -73,7 +73,7 @@ ALTER TABLE WFS_SCHEDULE_JOB ADD (owner VARCHAR(255));
 ```
 
 
-### data-api 구동 및 테스트
+### web service 구동 및 테스트
 - 테스트할 항목은 browser를 통한 rest 요청시 정상 응답 확인
 ```
 > docker run -ti -p 7070:7070 --link mariadb-test dpcore/data-api:v0.0.1
