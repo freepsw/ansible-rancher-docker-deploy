@@ -22,7 +22,7 @@ data_api:
     - dataplatform04
     - dataplatform16.skcc.com
 
-ftp_server : ftp://rts:!rts!@10.178.50.103/dpcore/
+ftp_server : ftp://<user>:<password>@10.178.50.103/dpcore/
 
 # docker_home_dir : /home/rts/apps/docker
 # docker_image_dir: {{docker_home_dir}}/images
