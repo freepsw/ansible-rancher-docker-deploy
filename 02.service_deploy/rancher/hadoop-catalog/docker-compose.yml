@@ -126,7 +126,7 @@ jobhistory-server:
   labels:
     io.rancher.sidekicks: jobhistory-server-config,jobhistory-server-data
     io.rancher.container.hostname_override: container_name
-    io.rancher.scheduler.affinity:container_label: io.rancher.stack_service.name=$${stack_name}/yarn-resourcemanager,io.rancher.stack_service.name=$${stack_name}/namenode-primary
+    io.rancher.scheduler.affinity:container_label_soft: io.rancher.stack_service.name=$${stack_name}/yarn-resourcemanager,io.rancher.stack_service.name=$${stack_name}/namenode-primary
   command: 'su -c "sleep 45 && /usr/local/hadoop-2.7.1/bin/mapred historyserver" mapred'
 
 yarn-resourcemanager-config:

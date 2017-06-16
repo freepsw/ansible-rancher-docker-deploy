@@ -90,8 +90,6 @@ curl -u "3D0171ECDCB2F1075540:yCHjDUnhQc4NuwXc2VT5hJ3CbW7bKa7U7W7xfAsF" \
 
 
 
-
-
 ### 2). Rancher Data-api HADOOP STACK 생성
 - 기본적으로 위의 과정을 반복한다.
 - 다른 점은 hadoop을 위한 docker-comopse & rancher-compse를 어떻게 생성하는가에 대한 것인데...
